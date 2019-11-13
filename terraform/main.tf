@@ -8,9 +8,26 @@ resource "aws_dynamodb_table" "account-service-user" {
   read_capacity = "10"
   write_capacity = "10"
   hash_key = "user_id"
+  range_key = "creation_date"
 
   attribute {
     name = "user_id"
+    type = "S"
+  }
+
+  attribute {
+    name = "creation_date"
+    type = "S"
+  }
+}
+resource "aws_dynamodb_table" "account-service-account" {
+  name = "account"
+  read_capacity = "10"
+  write_capacity = "10"
+  hash_key = "account_id"
+
+  attribute {
+    name = "account_id"
     type = "S"
   }
 }
