@@ -1,4 +1,4 @@
-package com.coelhocaique.finance.api.routes
+package com.coelhocaique.account.api.routes
 
 import com.coelhocaique.account.core.util.logger
 import org.springframework.stereotype.Component

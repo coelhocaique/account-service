@@ -10,7 +10,7 @@ import reactor.core.publisher.switchIfEmpty
 
 object ResponseHandler {
 
-     data class ErrorResponse(val errors: List<String>)
+    data class ErrorResponse(val errors: List<String>)
 
     fun <T> generateResponse(body: Mono<T>, status: Int = 200): Mono<ServerResponse> {
         return body.onErrorMap { it }

@@ -5,11 +5,9 @@ import java.time.LocalDateTime
 import java.util.UUID
 
 data class AccountDTO (
-        val accountId: UUID,
+        val accountId: UUID? = null,
         val userId: UUID,
-        val type: AccountType,
-        val lastName: String,
-        val email: String,
-        val creationDate: LocalDateTime,
-        val links: List<Map<String, String>>
+        val type: AccountType = AccountType.DEFAULT,
+        val creationDate: LocalDateTime? = null,
+        val links: List<Map<String, String>>? = null
 )

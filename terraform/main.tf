@@ -3,7 +3,7 @@ data "aws_region" "current" {}
 locals {
   account_id = "${data.aws_caller_identity.current.account_id}"
 }
-resource "aws_dynamodb_table" "account-service-user" {
+resource "aws_dynamodb_table" "personal-finance-user" {
   name = "user"
   read_capacity = "10"
   write_capacity = "10"
@@ -20,7 +20,7 @@ resource "aws_dynamodb_table" "account-service-user" {
     type = "S"
   }
 }
-resource "aws_dynamodb_table" "account-service-account" {
+resource "aws_dynamodb_table" "personal-finance-account" {
   name = "account"
   read_capacity = "10"
   write_capacity = "10"
