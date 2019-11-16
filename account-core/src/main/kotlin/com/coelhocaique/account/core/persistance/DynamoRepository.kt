@@ -8,6 +8,7 @@ import com.amazonaws.services.dynamodbv2.model.ScanRequest
 import com.fasterxml.jackson.databind.ObjectMapper
 import org.springframework.stereotype.Component
 
+@Suppress("UNCHECKED_CAST")
 @Component
 class DynamoRepository(val db: AmazonDynamoDB,
                        val objectMapper: ObjectMapper) {
@@ -25,14 +26,6 @@ class DynamoRepository(val db: AmazonDynamoDB,
                 .withExpressionAttributeValues(buildExpressionAttributeValues(key))
 
         return convertToMap(db.scan(request).items, clazz)
-    }
-
-    private fun buildFilterExpression(filter: Map<String, String>): String {
-        return filter.keys.joinToString(" AND ") { it.plus(" = :").plus(it) }
-    }
-
-    private fun buildExpressionAttributeValues(filter: Map<String, String>): Map<String, AttributeValue> {
-        return filter.map { ":".plus(it.key) to AttributeValue(it.value) }.toMap()
     }
 
     fun <T> addItem(tableName: String, o: T){
@@ -54,6 +47,14 @@ class DynamoRepository(val db: AmazonDynamoDB,
 
     private fun convertToMap(map: Map<String, AttributeValue>): Map<String, String> {
         return map.map { it.key to it.value.s }.toMap()
+    }
+
+    private fun buildFilterExpression(filter: Map<String, String>): String {
+        return filter.keys.joinToString(" AND ") { it.plus(" = :").plus(it) }
+    }
+
+    private fun buildExpressionAttributeValues(filter: Map<String, String>): Map<String, AttributeValue> {
+        return filter.map { ":".plus(it.key) to AttributeValue(it.value) }.toMap()
     }
 
     private fun <T> writeKeys(o: T) =

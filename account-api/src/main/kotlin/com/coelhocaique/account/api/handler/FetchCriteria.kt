@@ -6,8 +6,7 @@ data class FetchCriteria (
         val dateFrom: String? = null,
         val dateTo: String? = null,
         val id: String? = null,
-        val propertyName: String? = null,
-        val accountId: String
+        val propertyName: String? = null
 ){
     enum class SearchType {
         BY_ID,

@@ -15,6 +15,4 @@ object ObjectMapper {
                     lastName = request.lastName!!,
                     password = request.password
             ))
-
-
 }

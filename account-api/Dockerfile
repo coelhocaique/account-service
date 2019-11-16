@@ -1,6 +1,6 @@
 FROM openjdk:11
 
-LABEL source="https://github.com/coelhocaique/finance"\
+LABEL source="https://github.com/coelhocaique/account-service"\
       maintainer="Caique Coelho"
 
 ADD ./build/distributions/*.zip /account-api.zip

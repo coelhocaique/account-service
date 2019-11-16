@@ -20,6 +20,9 @@ object AccountMapper {
                     creationDate = LocalDateTime.now(),
                     type = document.type)
 
+    fun toDTO(userId: UUID): AccountDTO =
+            AccountDTO(accountId = userId, userId = userId)
+
     fun toMonoDTO(document: Account) = just(toDTO(document))
 
 }

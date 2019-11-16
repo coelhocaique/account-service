@@ -1,9 +1,10 @@
 package com.coelhocaique.account.core.service
 
 import com.coelhocaique.account.core.domain.User
-import com.coelhocaique.account.core.domain.dto.AccountDTO
 import com.coelhocaique.account.core.domain.dto.UserDTO
-import com.coelhocaique.account.core.domain.enums.AccountType
+import com.coelhocaique.account.core.domain.exception.UserException.UserExceptionHelper.alreadyRegistered
+import com.coelhocaique.account.core.domain.exception.UserException.UserExceptionHelper.notFound
+import com.coelhocaique.account.core.domain.mapper.AccountMapper.toDTO
 import com.coelhocaique.account.core.domain.mapper.UserMapper.toDocument
 import com.coelhocaique.account.core.domain.mapper.UserMapper.toMonoDTO
 import com.coelhocaique.account.core.persistance.UserRepository
@@ -24,8 +25,7 @@ class UserService(private val repository: UserRepository,
                 .flatMap { repository.insert(it) }
                 .flatMap { toMonoDTO(it) }
                 .doOnSuccess {
-                    val accountDto = AccountDTO(accountId = it.userId, userId = it.userId!!)
-                    accountService.create(accountDto)
+                    accountService.create(toDTO(it.userId!!))
                 }
     }
 
@@ -38,14 +38,14 @@ class UserService(private val repository: UserRepository,
                     accountService.findByUserId(it.userId!!)
                             .map { itt -> it.copy(accounts = itt) }
                 }
-                .switchIfEmpty { error(RuntimeException("invalid user")) }
+                .switchIfEmpty { error(notFound()) }
     }
 
     private fun validate(dto: Mono<UserDTO>): Mono<UserDTO> {
         return dto.filter {
             !repository.existsByEmail(it.email) &&
                     !repository.existsByUsername(it.username)
-        }.switchIfEmpty { error(RuntimeException("already registered")) }
+        }.switchIfEmpty { error(alreadyRegistered()) }
     }
 
     private fun extractUser(users: List<User>): Mono<User> {
@@ -67,5 +67,4 @@ class UserService(private val repository: UserRepository,
     private fun findByEmail(email: String): Mono<User> {
         return extractUser(repository.findByEmail(email))
     }
-
 }

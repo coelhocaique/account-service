@@ -2,6 +2,7 @@ package com.coelhocaique.account.api.helper
 
 import com.coelhocaique.account.api.helper.Messages.DEFAULT_ERROR_MESSAGE
 import com.coelhocaique.account.api.helper.exception.ApiException
+import com.coelhocaique.account.core.domain.exception.UserException
 import com.coelhocaique.account.core.util.logger
 import org.springframework.web.reactive.function.BodyInserters.fromObject
 import org.springframework.web.reactive.function.server.ServerResponse
@@ -18,6 +19,7 @@ object ResponseHandler {
                 .onErrorResume(Throwable::class.java) {
                     when (it) {
                         is ApiException -> mapApiException(it)
+                        is UserException -> mapUserException(it)
                         else -> mapException(it)
                     }
                 }
@@ -32,6 +34,15 @@ object ResponseHandler {
     }
 
     private fun mapApiException(it: ApiException): Mono<ServerResponse> {
+        logger().error("error=".plus(it.type.toString())
+                .plus(", cause=")
+                .plus(it.messages.joinToString { it }) , it)
+        return ServerResponse
+                .status(it.type.status)
+                .body(fromObject(buildErrorResponse(it.messages)))
+    }
+
+    private fun mapUserException(it: UserException): Mono<ServerResponse> {
         logger().error("error=".plus(it.type.toString())
                 .plus(", cause=")
                 .plus(it.messages.joinToString { it }) , it)
