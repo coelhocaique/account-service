@@ -10,7 +10,7 @@ object PasswordUtils {
     private const val ITERATIONS = 65536
     private const val KEY_LENGTH = 512
     private const val ALGORITHM = "PBKDF2WithHmacSHA512"
-    private const val SALT_LENGTH = 20
+    private const val SALT_LENGTH = 10
 
     fun encodePassword(password: String): String {
         return hashPassword(password, generateSalt())
@@ -38,7 +38,7 @@ object PasswordUtils {
     }
 
     private fun generateSalt(): String {
-        val random = SecureRandom.getInstanceStrong()
+        val random = SecureRandom.getInstance("SHA1PRNG")
         val salt = ByteArray(SALT_LENGTH)
         random.nextBytes(salt)
         return encodeBase64(salt)
